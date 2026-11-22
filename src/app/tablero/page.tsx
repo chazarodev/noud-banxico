@@ -168,6 +168,7 @@ export default async function TableroPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <h2 className="text-lg font-semibold text-text">Remesas familiares por mes</h2>
+          <p className="text-xs text-text-soft">Millones de dólares. En el eje, “6 mil” son 6,000 millones.</p>
           {comparativo && varRem !== null && (
             <p className="mb-4 text-sm text-text-soft">
               De enero a {mesLargo(rem.at(-1)!.mes).split(' de ')[0]} de {comparativo.anio} llegaron{' '}

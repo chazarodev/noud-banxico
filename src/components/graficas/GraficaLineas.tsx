@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { etiquetaX, formatoValor, type EjeX, type Unidad } from './formato';
+import { etiquetaX, formatoEje, formatoValor, type EjeX, type Unidad } from './formato';
 
 export type SerieLinea = {
   clave: string;
@@ -88,11 +88,11 @@ export function GraficaLineas({ series, unidad, eje, altura = 320, banda, refere
               minTickGap={28}
             />
             <YAxis
-              tickFormatter={(v: number) => formatoValor(v, unidad, true)}
+              tickFormatter={(v: number) => formatoEje(v, unidad)}
               tick={{ fill: 'var(--color-text-soft)', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              width={unidad === 'millonesUsd' ? 76 : 56}
+              width={unidad === 'pesos' ? 60 : 52}
               domain={['auto', 'auto']}
             />
             <Tooltip

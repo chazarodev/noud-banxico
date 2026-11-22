@@ -1,7 +1,7 @@
 'use client';
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { etiquetaX, formatoValor, type EjeX, type Unidad } from './formato';
+import { etiquetaX, formatoEje, formatoValor, type EjeX, type Unidad } from './formato';
 
 type Props = {
   puntos: { x: string; valor: number }[];
@@ -29,11 +29,11 @@ export function GraficaBarras({ puntos, unidad, eje, color = 'var(--serie-1)', a
             minTickGap={24}
           />
           <YAxis
-            tickFormatter={(v: number) => formatoValor(v, unidad, true)}
+            tickFormatter={(v: number) => formatoEje(v, unidad)}
             tick={{ fill: 'var(--color-text-soft)', fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            width={76}
+            width={52}
           />
           <Tooltip
             cursor={{ fill: 'var(--color-bg-hover)' }}

@@ -78,6 +78,15 @@ export function Encabezado() {
   const [movilAbierto, setMovilAbierto] = useState(false);
   const pathname = usePathname();
   useEffect(() => setMovilAbierto(false), [pathname]);
+  // Con el menú móvil abierto, la página de fondo no se desplaza: solo el menú.
+  useEffect(() => {
+    if (!movilAbierto) return;
+    const previo = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previo;
+    };
+  }, [movilAbierto]);
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-bg/90 backdrop-blur">
@@ -124,7 +133,7 @@ export function Encabezado() {
       </div>
 
       {movilAbierto && (
-        <nav className="border-t border-border bg-card px-4 py-4 text-sm md:hidden">
+        <nav className="max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-border bg-card px-4 pt-4 text-sm md:hidden">
           <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-soft">Indicadores</p>
           {INDICADORES.map((i) => (
             <Link key={i.href} href={i.href} className="block rounded-lg px-1 py-2 text-text">
@@ -147,14 +156,17 @@ export function Encabezado() {
             <a href={conUtm(NOUD.planes, 'menu-movil', 'planes')}>Planes</a>
             <a href={NOUD.login}>Iniciar sesión</a>
           </div>
-          <a
-            href={enlaceNoud('menu-movil', 'boton-registro')}
-            data-evento="click_noud"
-            data-ubicacion="menu-movil"
-            className="mt-4 block rounded-xl bg-brand px-4 py-2.5 text-center font-medium text-on-brand hover:bg-brand-hover"
-          >
-            Crear cuenta gratis
-          </a>
+          {/* Fijo al fondo del menú: siempre visible aunque la lista sea más alta que la pantalla. */}
+          <div className="sticky bottom-0 -mx-4 mt-3 border-t border-border bg-card px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
+            <a
+              href={enlaceNoud('menu-movil', 'boton-registro')}
+              data-evento="click_noud"
+              data-ubicacion="menu-movil"
+              className="block rounded-xl bg-brand px-4 py-2.5 text-center font-medium text-on-brand hover:bg-brand-hover"
+            >
+              Crear cuenta gratis
+            </a>
+          </div>
         </nav>
       )}
     </header>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Fuente } from '@/components/Fuente';
+import { MigasDePan } from '@/components/MigasDePan';
 import { TarjetaNoud } from '@/components/TarjetaNoud';
 import { fechaCorta, fechaLarga } from '@/lib/banxico/parse';
 import { datosMonedas, MONEDAS } from '@/lib/banxico/monedas';
@@ -40,9 +40,7 @@ export default async function MonedaPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <Link href="/otras-monedas" className="text-sm underline underline-offset-2">
-        Otras monedas
-      </Link>
+      <MigasDePan migas={[{ nombre: 'Otras monedas', ruta: '/otras-monedas' }, { nombre: m.nombre }]} />
       <h1 className="mt-2 text-3xl font-semibold text-text">
         Tipo de cambio del {m.nombre.toLowerCase()} hoy ({m.codigo} a MXN)
       </h1>

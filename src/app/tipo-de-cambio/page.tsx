@@ -71,6 +71,7 @@ export default async function TipoDeCambioPage() {
           creator: { '@type': 'Organization', name: 'Banco de México', url: 'https://www.banxico.org.mx' },
           temporalCoverage: `${d.primeraFecha}/${publicacion.punto.fecha}`,
           isAccessibleForFree: true,
+          license: 'https://www.banxico.org.mx/footer-es/salvedad-politicas-uso-banco-.html',
         }}
       />
 

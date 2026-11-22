@@ -29,3 +29,17 @@ export function formatoValor(v: number, unidad: Unidad, compacto = false): strin
       return v.toLocaleString('es-MX', { maximumFractionDigits: 3 });
   }
 }
+
+/** Etiquetas cortas para el eje Y: la unidad va en el subtítulo de la gráfica, no en cada marca. */
+export function formatoEje(v: number, unidad: Unidad): string {
+  switch (unidad) {
+    case 'porcentaje':
+      return `${v.toLocaleString('es-MX', { maximumFractionDigits: 1 })}%`;
+    case 'pesos':
+      return `$${v.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    case 'millonesUsd':
+      return `${(v / 1000).toLocaleString('es-MX', { maximumFractionDigits: 0 })} mil`;
+    default:
+      return v.toLocaleString('es-MX', { maximumFractionDigits: 1 });
+  }
+}

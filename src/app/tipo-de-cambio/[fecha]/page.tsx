@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Fuente } from '@/components/Fuente';
+import { MigasDePan } from '@/components/MigasDePan';
 import { TarjetaNoud } from '@/components/TarjetaNoud';
 import { esFechaISO, fechaCorta, fechaLarga, formatoNumero } from '@/lib/banxico/parse';
 import { SERIES } from '@/lib/banxico/series';
@@ -66,13 +67,17 @@ export default async function TipoDeCambioFechaPage({ params }: Props) {
   const diaAnterior = sumarDias(fecha, -1);
   const diaSiguiente = sumarDias(fecha, 1);
 
+  // Contenido propio de cada fecha: publicaciones del mismo mes, promedio y extremos.
+  const mes = fecha.slice(0, 7);
+  const delMes = d.publicaciones.filter((p) => p.fecha.startsWith(mes) && p.fecha <= d.hoy);
+  const promedio = delMes.length ? delMes.reduce((a, p) => a + p.valor, 0) / delMes.length : null;
+  const maxMes = delMes.length ? delMes.reduce((a, p) => (p.valor > a.valor ? p : a)) : null;
+  const minMes = delMes.length ? delMes.reduce((a, p) => (p.valor < a.valor ? p : a)) : null;
+  const nombreMes = fechaLarga(`${mes}-01`).replace(/^1 de /, '');
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <p className="text-sm">
-        <Link href={S.ruta} className="underline underline-offset-2">
-          Tipo de cambio DOF hoy
-        </Link>
-      </p>
+      <MigasDePan migas={[{ nombre: 'Tipo de cambio DOF', ruta: S.ruta }, { nombre: fechaLarga(fecha) }]} />
 
       <h1 className="mt-2 text-3xl font-semibold text-text">
         Tipo de cambio DOF del {fechaLarga(fecha)}
@@ -135,6 +140,31 @@ export default async function TipoDeCambioFechaPage({ params }: Props) {
           </Link>
         )}
       </nav>
+
+      {delMes.length > 0 && promedio !== null && maxMes && minMes && (
+        <section className="mt-10">
+          <h2 className="text-xl font-semibold text-text">Publicaciones del DOF en {nombreMes}</h2>
+          <p className="mt-1 text-sm text-text-soft">
+            Promedio del mes: <strong className="text-text">${formatoNumero(promedio, D)}</strong> · máximo $
+            {formatoNumero(maxMes.valor, D)} ({fechaCorta(maxMes.fecha)}) · mínimo ${formatoNumero(minMes.valor, D)} (
+            {fechaCorta(minMes.fecha)}) · {delMes.length} publicaciones.
+          </p>
+          <ul className="mt-3 grid grid-cols-2 gap-x-6 text-sm sm:grid-cols-3">
+            {delMes.map((p) => (
+              <li key={p.fecha} className="flex justify-between border-b border-border py-1.5 tabular-nums">
+                {p.fecha === fecha ? (
+                  <span className="font-semibold text-text">{fechaCorta(p.fecha)}</span>
+                ) : (
+                  <Link href={`${S.ruta}/${p.fecha}`} className="underline underline-offset-2">
+                    {fechaCorta(p.fecha)}
+                  </Link>
+                )}
+                <span>${formatoNumero(p.valor, D)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <TarjetaNoud
         titulo="Convierte tus facturas en dólares sin hacerlo a mano"
