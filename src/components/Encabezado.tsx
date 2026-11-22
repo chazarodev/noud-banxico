@@ -76,7 +76,7 @@ export function Encabezado() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-bg/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-5xl items-center gap-6 px-4">
+      <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4 sm:gap-6">
         <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="Indicadores Noud XML, inicio">
           <NoudMark />
           <span className="whitespace-nowrap font-semibold text-text">
@@ -89,7 +89,7 @@ export function Encabezado() {
           <Desplegable titulo="Calculadoras" items={HERRAMIENTAS} />
         </nav>
 
-        <div className="ml-auto flex items-center gap-3 text-sm">
+        <div className="ml-auto flex shrink-0 items-center gap-1 text-sm sm:gap-3">
           <ThemeToggle />
           <a href={conUtm(NOUD.planes, 'encabezado', 'planes')} className="hidden whitespace-nowrap text-text-soft hover:text-text lg:inline">
             Planes
@@ -101,7 +101,7 @@ export function Encabezado() {
             href={enlaceNoud('encabezado', 'boton-registro')}
             data-evento="click_noud"
             data-ubicacion="encabezado"
-            className="whitespace-nowrap rounded-xl bg-brand px-3.5 py-2 font-medium text-on-brand hover:bg-brand-hover"
+            className="hidden whitespace-nowrap rounded-xl bg-brand px-3.5 py-2 font-medium text-on-brand hover:bg-brand-hover sm:inline-block"
           >
             Crear cuenta gratis
           </a>
@@ -110,7 +110,7 @@ export function Encabezado() {
             onClick={() => setMovilAbierto((v) => !v)}
             aria-expanded={movilAbierto}
             aria-label="Abrir menú"
-            className="rounded-lg p-2 text-text md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-text hover:bg-brand-light md:hidden"
           >
             {movilAbierto ? '✕' : '☰'}
           </button>
@@ -135,6 +135,14 @@ export function Encabezado() {
             <a href={conUtm(NOUD.planes, 'menu-movil', 'planes')}>Planes</a>
             <a href={NOUD.login}>Iniciar sesión</a>
           </div>
+          <a
+            href={enlaceNoud('menu-movil', 'boton-registro')}
+            data-evento="click_noud"
+            data-ubicacion="menu-movil"
+            className="mt-4 block rounded-xl bg-brand px-4 py-2.5 text-center font-medium text-on-brand hover:bg-brand-hover"
+          >
+            Crear cuenta gratis
+          </a>
         </nav>
       )}
     </header>

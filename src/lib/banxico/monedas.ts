@@ -5,8 +5,9 @@ import { sumarDias } from './tipo-de-cambio';
 
 /**
  * Tipos de cambio de otras divisas en pesos (cruzados con el FIX; fuente FMI/Banco de Canadá vía Banxico).
- * IDs POR CONFIRMAR con GET /series/{id}: si el título que devuelve Banxico no contiene `palabra`,
- * la moneda se oculta y se registra un aviso, para no publicar un dato equivocado.
+ * IDs confirmados con los metadatos del SIE el 22-nov-2026 ("Cotización de las divisas que conforman la canasta
+ * del DEG respecto al peso mexicano" / "Cotización de la divisa respecto al peso mexicano", diarias desde 2018).
+ * Si el título que devuelve Banxico dejara de contener `palabra`, la moneda se oculta y se registra un aviso.
  */
 export const MONEDAS = [
   { slug: 'euro', nombre: 'Euro', codigo: 'EUR', id: 'SF46410', palabra: 'euro', decimales: 4 },

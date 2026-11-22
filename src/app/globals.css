@@ -47,3 +47,35 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
 }
+
+/* ---------- Movimiento: scroll suave y entrada de página ---------- */
+/* data-scroll-behavior="smooth" en <html> hace que Next.js lo respete en anclas y lo desactive al cambiar de ruta
+   (al navegar, la nueva página aparece arriba sin "deslizarse" desde abajo). */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes entrada-pagina {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.entrada-pagina {
+  animation: entrada-pagina 280ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Quien pidió menos movimiento en su sistema no ve animaciones. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .entrada-pagina {
+    animation: none;
+  }
+}

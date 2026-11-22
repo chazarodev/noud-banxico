@@ -3,14 +3,14 @@ import { CalculadoraIsr } from '@/components/CalculadoraIsr';
 import { JsonLd } from '@/components/JsonLd';
 import { TarjetaNoud } from '@/components/TarjetaNoud';
 import { hoyCDMX } from '@/lib/banxico/parse';
-import { EJERCICIO, SUBSIDIO_2026, TARIFA_MENSUAL_2026 } from '@/lib/fiscal/isr-2026';
+import { EJERCICIO, PERIODOS, SUBSIDIO_2026, tarifaPara } from '@/lib/fiscal/isr-2026';
 import { url } from '@/lib/sitio';
 
 const RUTA = '/calculadora-isr-salarios';
 
 export const metadata: Metadata = {
-  title: `Calculadora de ISR por sueldos y salarios ${EJERCICIO} (con subsidio al empleo)`,
-  description: `Calcula el ISR que te retienen por sueldo mensual con la tarifa del artículo 96 de la LISR para ${EJERCICIO} y el subsidio para el empleo. Desglose paso a paso.`,
+  title: `Calculadora de ISR por sueldos ${EJERCICIO}: semanal, quincenal y mensual`,
+  description: `Calcula el ISR que te retienen por sueldo diario, semanal, decenal, quincenal o mensual con las tarifas ${EJERCICIO} del artículo 96 de la LISR y el subsidio para el empleo. Desglose paso a paso y tablas completas.`,
   alternates: { canonical: url(RUTA) },
 };
 
@@ -39,14 +39,14 @@ export default function CalculadoraIsrPage() {
 
       <h1 className="text-3xl font-semibold text-text">Calculadora de ISR por sueldos y salarios {EJERCICIO}</h1>
       <p className="mt-2 max-w-2xl text-text-soft">
-        Calcula cuánto ISR te retienen al mes con la tarifa del artículo 96 de la Ley del ISR y el subsidio para el
-        empleo vigentes en {EJERCICIO}.
+        Calcula cuánto ISR te retienen según cada cuánto te pagan, con las tarifas del artículo 96 de la Ley del ISR y el
+        subsidio para el empleo vigentes en {EJERCICIO}.
       </p>
 
       <CalculadoraIsr mesInicial={mesActual} />
 
       <p className="mt-3 text-xs text-text-soft">
-        Cálculo informativo. Supone que todo el sueldo es gravable y que se paga de forma mensual; no incluye cuotas
+        Cálculo informativo. Supone que todo el sueldo es gravable; no incluye cuotas
         del IMSS, ingresos exentos (aguinaldo, prima vacacional, horas extra) ni el ajuste anual. Tu recibo puede
         variar según cómo calcule la nómina tu empleador.
       </p>
@@ -74,28 +74,46 @@ export default function CalculadoraIsrPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="text-xl font-semibold text-text">Tarifa mensual de ISR {EJERCICIO} (artículo 96 LISR)</h2>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-text-soft">
-                <th className="py-2 pr-4 font-medium">Límite inferior</th>
-                <th className="py-2 pr-4 font-medium">Límite superior</th>
-                <th className="py-2 pr-4 text-right font-medium">Cuota fija</th>
-                <th className="py-2 text-right font-medium">% sobre excedente</th>
-              </tr>
-            </thead>
-            <tbody>
-              {TARIFA_MENSUAL_2026.map((r) => (
-                <tr key={r.limiteInferior} className="border-b border-border tabular-nums">
-                  <td className="py-2 pr-4">${pesos(r.limiteInferior)}</td>
-                  <td className="py-2 pr-4">{r.limiteSuperior === null ? 'En adelante' : `$${pesos(r.limiteSuperior)}`}</td>
-                  <td className="py-2 pr-4 text-right">${pesos(r.cuotaFija)}</td>
-                  <td className="py-2 text-right">{r.porcentaje.toFixed(2)}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <h2 className="text-xl font-semibold text-text">Tarifas de ISR {EJERCICIO} por periodo de pago (artículo 96 LISR)</h2>
+        <div className="mt-3 space-y-2">
+          {PERIODOS.slice()
+            .reverse()
+            .map((p) => (
+              <details
+                key={p.valor}
+                open={p.valor === 'mensual'}
+                className="group rounded-2xl border border-border bg-card px-4 py-3 shadow-sm"
+              >
+                <summary className="cursor-pointer list-none font-medium text-text">
+                  Tarifa {p.texto.toLowerCase()} {EJERCICIO}
+                  <span className="float-right text-text-soft transition group-open:rotate-45">+</span>
+                </summary>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-left text-text-soft">
+                        <th className="py-2 pr-4 font-medium">Límite inferior</th>
+                        <th className="py-2 pr-4 font-medium">Límite superior</th>
+                        <th className="py-2 pr-4 text-right font-medium">Cuota fija</th>
+                        <th className="py-2 text-right font-medium">% sobre excedente</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tarifaPara(p.valor).map((r) => (
+                        <tr key={r.limiteInferior} className="border-b border-border tabular-nums">
+                          <td className="py-2 pr-4">${pesos(r.limiteInferior)}</td>
+                          <td className="py-2 pr-4">
+                            {r.limiteSuperior === null ? 'En adelante' : `$${pesos(r.limiteSuperior)}`}
+                          </td>
+                          <td className="py-2 pr-4 text-right">${pesos(r.cuotaFija)}</td>
+                          <td className="py-2 text-right">{r.porcentaje.toFixed(2)}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            ))}
         </div>
         <p className="mt-3 text-xs text-text-soft">
           Fuentes: Anexo 8 de la Resolución Miscelánea Fiscal {EJERCICIO} (DOF del 28 de diciembre de 2025); decreto

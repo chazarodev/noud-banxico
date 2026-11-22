@@ -42,6 +42,40 @@ function redondear(n: number): number {
   return Math.round(n * 100) / 100;
 }
 
+export type Periodo = 'diario' | 'semanal' | 'decenal' | 'quincenal' | 'mensual';
+
+/** Días de cada periodo de pago (art. 96 LISR y Anexo 8 RMF). El mes se considera de 30.4 días. */
+export const PERIODOS: { valor: Periodo; texto: string; dias: number }[] = [
+  { valor: 'diario', texto: 'Diario', dias: 1 },
+  { valor: 'semanal', texto: 'Semanal', dias: 7 },
+  { valor: 'decenal', texto: 'Decenal', dias: 10 },
+  { valor: 'quincenal', texto: 'Quincenal', dias: 15 },
+  { valor: 'mensual', texto: 'Mensual', dias: 30.4 },
+];
+
+/**
+ * Tarifa de un periodo como la publica el Anexo 8: la diaria es la mensual ÷ 30.4 redondeada a centavos,
+ * y la semanal, decenal y quincenal son la diaria × días. El límite inferior es el superior anterior + 0.01.
+ * Verificado contra el Anexo 8 2026: quincenal 0.01–416.70, 416.71–3,537.15 (cuota 7.95); semanal
+ * 194.47–1,650.67 (cuota 3.71); decenal 277.81–2,358.10 (cuota 5.30).
+ */
+export function tarifaPara(periodo: Periodo): RenglonTarifa[] {
+  if (periodo === 'mensual') return TARIFA_MENSUAL_2026;
+  const dias = PERIODOS.find((p) => p.valor === periodo)!.dias;
+  const porDias = (n: number) => redondear(redondear(n / 30.4) * dias);
+  const renglones: RenglonTarifa[] = [];
+  TARIFA_MENSUAL_2026.forEach((r, i) => {
+    const anterior = renglones[i - 1];
+    renglones.push({
+      limiteInferior: i === 0 ? 0.01 : redondear(anterior.limiteSuperior! + 0.01),
+      limiteSuperior: r.limiteSuperior === null ? null : porDias(r.limiteSuperior),
+      cuotaFija: porDias(r.cuotaFija),
+      porcentaje: r.porcentaje,
+    });
+  });
+  return renglones;
+}
+
 export type ResultadoIsr = {
   base: number;
   renglon: RenglonTarifa;
@@ -55,24 +89,27 @@ export type ResultadoIsr = {
 };
 
 /**
- * ISR mensual a retener por sueldos (art. 96 LISR), con subsidio para el empleo.
- * Supone que todo el sueldo es gravable. El subsidio no puede exceder el ISR causado
- * y, si lo excede, la diferencia no se entrega al trabajador.
+ * ISR a retener por sueldos de un periodo (art. 96 LISR), con subsidio para el empleo.
+ * Supone que todo el sueldo es gravable. El subsidio del periodo es el mensual ÷ 30.4 × días, y se aplica si
+ * el sueldo, llevado a mes, no rebasa el límite mensual. No puede exceder el ISR y la diferencia no se entrega.
  */
-export function calcularIsrMensual(sueldoMensual: number, mes: number): ResultadoIsr | null {
-  if (!Number.isFinite(sueldoMensual) || sueldoMensual <= 0) return null;
-  const base = redondear(sueldoMensual);
+export function calcularIsr(sueldo: number, periodo: Periodo, mes: number): ResultadoIsr | null {
+  if (!Number.isFinite(sueldo) || sueldo <= 0) return null;
+  const tarifa = tarifaPara(periodo);
+  const dias = PERIODOS.find((p) => p.valor === periodo)!.dias;
+  const base = redondear(sueldo);
   const renglon =
-    TARIFA_MENSUAL_2026.find((r) => r.limiteSuperior === null || base <= r.limiteSuperior) ??
-    TARIFA_MENSUAL_2026[TARIFA_MENSUAL_2026.length - 1];
+    tarifa.find((r) => r.limiteSuperior === null || base <= r.limiteSuperior) ?? tarifa[tarifa.length - 1];
 
   const excedente = redondear(base - renglon.limiteInferior);
   const impuestoMarginal = redondear((excedente * renglon.porcentaje) / 100);
   const isrCausado = redondear(renglon.cuotaFija + impuestoMarginal);
 
-  const montoSubsidio = mes === 1 ? SUBSIDIO_2026.enero : SUBSIDIO_2026.febreroADiciembre;
+  const montoMensual = mes === 1 ? SUBSIDIO_2026.enero : SUBSIDIO_2026.febreroADiciembre;
+  const montoSubsidio = periodo === 'mensual' ? montoMensual : redondear((montoMensual / 30.4) * dias);
+  const equivalenteMensual = periodo === 'mensual' ? base : (base / dias) * 30.4;
   const subsidio =
-    base <= SUBSIDIO_2026.limiteIngresoMensual ? Math.min(montoSubsidio, isrCausado) : 0;
+    equivalenteMensual <= SUBSIDIO_2026.limiteIngresoMensual ? Math.min(montoSubsidio, isrCausado) : 0;
 
   const isrRetenido = redondear(isrCausado - subsidio);
   return {
@@ -87,3 +124,6 @@ export function calcularIsrMensual(sueldoMensual: number, mes: number): Resultad
     tasaEfectiva: redondear((isrRetenido / base) * 100),
   };
 }
+
+/** ISR mensual (lo usan la calculadora de aguinaldo y la de ISR en modo mensual). */
+export const calcularIsrMensual = (sueldoMensual: number, mes: number) => calcularIsr(sueldoMensual, 'mensual', mes);

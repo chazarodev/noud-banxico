@@ -13,10 +13,14 @@ const num = (t: string) => Number(t.replace(/[^\d.]/g, ''));
 function Metodo({ titulo, m, mejor }: { titulo: string; m: MetodoIsr; mejor: boolean }) {
   return (
     <div className={`rounded-xl border p-4 ${mejor ? 'border-brand bg-brand-light' : 'border-border'}`}>
-      <p className="text-sm font-medium text-text">
-        {titulo}
-        {mejor && <span className="ml-2 rounded-md bg-brand px-1.5 py-0.5 text-xs text-on-brand">Menor ISR</span>}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+        <p className="text-sm font-medium text-text">{titulo}</p>
+        {mejor && (
+          <span className="whitespace-nowrap rounded-md bg-brand px-1.5 py-0.5 text-xs font-medium text-on-brand">
+            Menor ISR
+          </span>
+        )}
+      </div>
       <p className="mt-1 text-2xl font-bold tabular-nums text-text">{pesos(m.neto)}</p>
       <p className="text-xs text-text-soft">Aguinaldo neto · ISR {pesos(m.isr)}</p>
       <dl className="mt-3 space-y-1 text-xs">
