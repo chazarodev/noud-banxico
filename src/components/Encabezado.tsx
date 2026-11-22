@@ -14,6 +14,7 @@ const INDICADORES = [
 const HERRAMIENTAS = [
   { href: '/calculadora-aguinaldo', texto: 'Calculadora de aguinaldo 2026' },
   { href: '/calculadora-isr-salarios', texto: 'ISR por sueldos y salarios' },
+  { href: '/calculadora-actualizacion-recargos', texto: 'Actualización y recargos SAT' },
   { href: '/convertidor-dolares-pesos', texto: 'Convertidor de dólares a pesos' },
   { href: '/verificador-tipo-cambio-cfdi', texto: 'Verificador de tipo de cambio en CFDI' },
 ];

@@ -44,6 +44,9 @@ export function PiePagina() {
               <Link href="/verificador-tipo-cambio-cfdi" className="hover:text-text">Verificador de tipo de cambio en CFDI</Link>
             </li>
             <li>
+              <Link href="/calculadora-actualizacion-recargos" className="hover:text-text">Actualización y recargos SAT</Link>
+            </li>
+            <li>
               <Link href="/calculadora-isr-salarios" className="hover:text-text">Calculadora de ISR por sueldos</Link>
             </li>
           </ul>
