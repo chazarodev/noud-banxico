@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Encabezado } from '@/components/Encabezado';
 import { PiePagina } from '@/components/PiePagina';
+import { Proveedores } from '@/components/Proveedores';
 import { SITE_URL } from '@/lib/sitio';
 import './globals.css';
 
@@ -22,11 +23,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-MX">
+    <html lang="es-MX" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-bg text-text antialiased`}>
-        <Encabezado />
-        {children}
-        <PiePagina />
+        <Proveedores>
+          <Encabezado />
+          {children}
+          <PiePagina />
+        </Proveedores>
       </body>
     </html>
   );

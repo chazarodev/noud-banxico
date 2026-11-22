@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { calcularActualizacion, PRIMER_ANIO, type InpcMensual } from '@/lib/fiscal/actualizacion';
+import { Input } from '@/components/ui/Input';
+import { Ayuda } from '@/components/ui/Tooltip';
 
 const pesos = (n: number) => n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -19,7 +21,6 @@ export function CalculadoraActualizacion({ inpc, hoy }: Props) {
     [monto, vencimiento, pago, inpc],
   );
 
-  const campo = 'mt-1 w-full rounded-xl border border-border-strong bg-card px-3 py-2.5 text-text';
   const filas: [string, string][] =
     'error' in r
       ? []
@@ -38,34 +39,30 @@ export function CalculadoraActualizacion({ inpc, hoy }: Props) {
   return (
     <section className="mt-6 grid gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm md:grid-cols-2">
       <div className="space-y-4">
-        <label className="block">
-          <span className="text-sm font-medium text-text">Monto de la contribución omitida</span>
-          <input inputMode="decimal" value={monto} onChange={(e) => setMonto(e.target.value)} className={`${campo} tabular-nums`} />
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-text">Fecha en que debió pagarse</span>
-          <input
-            type="date"
-            min={`${PRIMER_ANIO}-01-01`}
-            max={hoy}
-            value={vencimiento}
-            onChange={(e) => e.target.value && setVencimiento(e.target.value)}
-            className={campo}
-          />
-          <span className="mt-1 block text-xs text-text-soft">
-            Por ejemplo, el día 17 del mes siguiente para pagos provisionales mensuales.
-          </span>
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-text">Fecha en que vas a pagar</span>
-          <input
-            type="date"
-            min={vencimiento}
-            value={pago}
-            onChange={(e) => e.target.value && setPago(e.target.value)}
-            className={campo}
-          />
-        </label>
+        <Input
+          label="Monto de la contribución omitida"
+          prefijo="$"
+          inputMode="decimal"
+          value={monto}
+          onChange={(e) => setMonto(e.target.value)}
+        />
+        <Input
+          label="Fecha en que debió pagarse"
+          type="date"
+          min={`${PRIMER_ANIO}-01-01`}
+          max={hoy}
+          value={vencimiento}
+          onChange={(e) => e.target.value && setVencimiento(e.target.value)}
+          ayuda="Por ejemplo, el día 17 del mes siguiente para pagos provisionales mensuales."
+          extra={<Ayuda texto="Si la fecha límite cayó en día inhábil, el plazo se recorre al siguiente día hábil." />}
+        />
+        <Input
+          label="Fecha en que vas a pagar"
+          type="date"
+          min={vencimiento}
+          value={pago}
+          onChange={(e) => e.target.value && setPago(e.target.value)}
+        />
       </div>
 
       <div aria-live="polite">

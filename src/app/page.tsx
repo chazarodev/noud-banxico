@@ -4,6 +4,8 @@ import { JsonLd } from '@/components/JsonLd';
 import { TarjetaIndicador } from '@/components/TarjetaIndicador';
 import { TarjetaNoud } from '@/components/TarjetaNoud';
 import { resumenIndicadores } from '@/lib/banxico/indicadores';
+import { datosMonedas } from '@/lib/banxico/monedas';
+import { SALARIO_MINIMO, UMA } from '@/lib/fiscal/referencias';
 import { fechaCorta, fechaLarga, hoyCDMX, mesLargo } from '@/lib/banxico/parse';
 import { SERIES, formatoValor } from '@/lib/banxico/series';
 import { datosTipoDeCambio, vistaDelDia } from '@/lib/banxico/tipo-de-cambio';
@@ -30,7 +32,9 @@ async function tipoDeCambioSeguro() {
 }
 
 export default async function Portada() {
-  const [tc, indicadores] = await Promise.all([tipoDeCambioSeguro(), resumenIndicadores()]);
+  const [tc, indicadores, monedas] = await Promise.all([tipoDeCambioSeguro(), resumenIndicadores(), datosMonedas()]);
+  const euro = monedas.find((m) => m.slug === 'euro');
+  const pesos2 = (n: number) => n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const hoy = tc?.hoy ?? hoyCDMX();
   const TC = SERIES.tipoCambioDOF;
 
@@ -111,6 +115,31 @@ export default async function Portada() {
           ))}
         </section>
       )}
+
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold text-text">Valores de referencia</h2>
+        <div className="mt-3 grid gap-4 sm:grid-cols-3">
+          {(
+            [
+              ['/uma', `UMA ${UMA[0].anio}`, `$${pesos2(UMA[0].diario)}`, 'diaria · multas, topes y exenciones'],
+              ['/salario-minimo', `Salario mínimo ${SALARIO_MINIMO[0].anio}`, `$${pesos2(SALARIO_MINIMO[0].general)}`, `diario · frontera norte $${pesos2(SALARIO_MINIMO[0].frontera)}`],
+              ...(euro
+                ? [['/otras-monedas', 'Euro', `$${euro.actual.valor.toFixed(4)}`, `pesos por euro · ${fechaCorta(euro.actual.fecha)}`]]
+                : []),
+            ] as [string, string, string, string][]
+          ).map(([href, titulo, valor, detalle]) => (
+            <Link
+              key={href}
+              href={href}
+              className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-border-strong hover:shadow-md"
+            >
+              <p className="text-sm font-medium text-text-soft">{titulo}</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-text">{valor}</p>
+              <p className="mt-1 text-xs text-text-soft">{detalle}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold text-text">Calculadoras</h2>

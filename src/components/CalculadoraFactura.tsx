@@ -10,37 +10,14 @@ import {
   type Modo,
   type Regimen,
 } from '@/lib/fiscal/factura';
+import { Input } from '@/components/ui/Input';
+import { Segmentado } from '@/components/ui/Segmentado';
+import { Select } from '@/components/ui/Select';
+import { Ayuda } from '@/components/ui/Tooltip';
 
 const pesos = (n: number) => n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 const num = (t: string) => Number(t.replace(/[^\d.]/g, ''));
 const tasa6 = (pct: number) => (pct / 100).toFixed(6); // así va en el CFDI: 0.160000
-
-function Opciones<T extends string>({
-  valor,
-  opciones,
-  onChange,
-}: {
-  valor: T;
-  opciones: { valor: T; texto: string }[];
-  onChange: (v: T) => void;
-}) {
-  return (
-    <div className="mt-1 flex flex-wrap gap-2">
-      {opciones.map((o) => (
-        <button
-          key={o.valor}
-          type="button"
-          onClick={() => onChange(o.valor)}
-          className={`rounded-xl border px-3 py-2 text-sm ${
-            valor === o.valor ? 'border-brand bg-brand text-on-brand' : 'border-border-strong text-text-soft'
-          }`}
-        >
-          {o.texto}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 const ETIQUETA_MODO: Record<Modo, string> = {
   subtotal: 'Precio sin IVA (subtotal)',
@@ -66,69 +43,73 @@ export function CalculadoraFactura() {
     [f, regimen, ivaGastos],
   );
 
-  const campo = 'mt-1 w-full rounded-xl border border-border-strong bg-card px-3 py-2.5 text-text';
 
   return (
     <>
       <section className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-4">
-            <div>
-              <span className="text-sm font-medium text-text">Tu régimen</span>
-              <Opciones
-                valor={regimen}
-                onChange={setRegimen}
-                opciones={[
-                  { valor: 'resico', texto: 'RESICO' },
-                  { valor: 'general', texto: 'Régimen general (honorarios, arrendamiento, empresarial)' },
-                ]}
-              />
-            </div>
-            <label className="block">
-              <span className="text-sm font-medium text-text">¿Qué cobras?</span>
-              <select value={actividad} onChange={(e) => setActividad(e.target.value as Actividad)} className={campo}>
-                {ACTIVIDADES.map((a) => (
-                  <option key={a.valor} value={a.valor}>
-                    {a.texto}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div>
-              <span className="text-sm font-medium text-text">¿A quién le facturas?</span>
-              <Opciones
-                valor={cliente}
-                onChange={setCliente}
-                opciones={[
-                  { valor: 'empresa', texto: 'A una empresa (persona moral)' },
-                  { valor: 'persona', texto: 'A una persona física o público en general' },
-                ]}
-              />
-            </div>
-            <label className="flex items-center gap-2 text-sm text-text">
-              <input type="checkbox" checked={frontera} onChange={(e) => setFrontera(e.target.checked)} />
-              Aplico IVA de 8 % (región fronteriza)
-            </label>
+            <Segmentado
+              label="Tu régimen"
+              modo="fila"
+              value={regimen}
+              onChange={setRegimen}
+              options={[
+                { value: 'resico', label: 'RESICO' },
+                { value: 'general', label: 'Régimen general' },
+              ]}
+            />
+            <Select
+              label="¿Qué cobras?"
+              value={actividad}
+              onChange={setActividad}
+              options={ACTIVIDADES.map((a) => ({ value: a.valor, label: a.texto }))}
+            />
+            <Segmentado
+              label="¿A quién le facturas?"
+              modo="fila"
+              value={cliente}
+              onChange={setCliente}
+              options={[
+                { value: 'empresa', label: 'Empresa (persona moral)' },
+                { value: 'persona', label: 'Persona física o público' },
+              ]}
+            />
+            <Segmentado
+              label="Tasa de IVA"
+              modo="fila"
+              value={frontera ? '8' : '16'}
+              onChange={(v) => setFrontera(v === '8')}
+              options={[
+                { value: '16', label: '16 % general' },
+                { value: '8', label: '8 % región fronteriza' },
+              ]}
+            />
           </div>
 
           <div className="space-y-4">
-            <div>
-              <span className="text-sm font-medium text-text">¿Qué cantidad conoces?</span>
-              <Opciones
-                valor={modo}
-                onChange={setModo}
-                opciones={(Object.keys(ETIQUETA_MODO) as Modo[]).map((m) => ({ valor: m, texto: ETIQUETA_MODO[m] }))}
-              />
-            </div>
-            <label className="block">
-              <span className="text-sm font-medium text-text">{ETIQUETA_MODO[modo]}</span>
-              <input inputMode="decimal" value={monto} onChange={(e) => setMonto(e.target.value)} className={`${campo} text-lg tabular-nums`} />
-              {modo === 'deposito' && (
-                <span className="mt-1 block text-xs text-text-soft">
-                  Calculamos cuánto debe decir la factura para que, después de retenciones, recibas esta cantidad.
-                </span>
-              )}
-            </label>
+            <Segmentado
+              label="¿Qué cantidad conoces?"
+              value={modo}
+              onChange={setModo}
+              options={(Object.keys(ETIQUETA_MODO) as Modo[]).map((m) => ({ value: m, label: ETIQUETA_MODO[m] }))}
+            />
+            <Input
+              label={ETIQUETA_MODO[modo]}
+              prefijo="$"
+              inputMode="decimal"
+              value={monto}
+              onChange={(e) => setMonto(e.target.value)}
+              className="text-lg"
+              ayuda={
+                modo === 'deposito'
+                  ? 'Calculamos cuánto debe decir la factura para que, después de retenciones, recibas esta cantidad.'
+                  : undefined
+              }
+              extra={
+                <Ayuda texto="Subtotal: precio antes de IVA. Total: lo que dice la factura con IVA. Depósito: lo que llega a tu cuenta después de retenciones." />
+              }
+            />
           </div>
         </div>
 
@@ -171,10 +152,16 @@ export function CalculadoraFactura() {
               {mes ? (
                 <>
                   <p className="text-sm font-medium text-text-soft">Si es tu único ingreso del mes (RESICO)</p>
-                  <label className="mt-2 block">
-                    <span className="text-xs text-text-soft">IVA de tus gastos del mes (facturas que te hicieron)</span>
-                    <input inputMode="decimal" value={ivaGastos} onChange={(e) => setIvaGastos(e.target.value)} className={`${campo} tabular-nums`} />
-                  </label>
+                  <div className="mt-2">
+                    <Input
+                      label="IVA de tus gastos del mes"
+                      prefijo="$"
+                      inputMode="decimal"
+                      value={ivaGastos}
+                      onChange={(e) => setIvaGastos(e.target.value)}
+                      extra={<Ayuda texto="El IVA que te cobraron en facturas de gastos de tu actividad (IVA acreditable)." />}
+                    />
+                  </div>
                   {mes.tasaIsr === null ? (
                     <p className="mt-3 text-sm text-text-soft">
                       Ingresos por arriba del límite mensual de RESICO: revisa tu régimen con tu contador.

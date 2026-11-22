@@ -4,12 +4,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { NoudMark } from '@/components/NoudMark';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { NOUD, conUtm, enlaceNoud } from '@/lib/sitio';
 
 // Rutas internas (next/link agrega /indicadores solo). Agrega aquí cada página nueva.
 const INDICADORES = [
   { href: '/', texto: 'Todos los indicadores' },
   { href: '/tipo-de-cambio', texto: 'Tipo de cambio DOF hoy' },
+  { href: '/udis', texto: 'Valor de la UDI hoy' },
+  { href: '/uma', texto: 'UMA 2026' },
+  { href: '/salario-minimo', texto: 'Salario mínimo 2026' },
+  { href: '/otras-monedas', texto: 'Euro y otras monedas' },
 ];
 const HERRAMIENTAS = [
   { href: '/calculadora-aguinaldo', texto: 'Calculadora de aguinaldo 2026' },
@@ -84,7 +89,8 @@ export function Encabezado() {
           <Desplegable titulo="Calculadoras" items={HERRAMIENTAS} />
         </nav>
 
-        <div className="ml-auto flex items-center gap-4 text-sm">
+        <div className="ml-auto flex items-center gap-3 text-sm">
+          <ThemeToggle />
           <a href={conUtm(NOUD.planes, 'encabezado', 'planes')} className="hidden whitespace-nowrap text-text-soft hover:text-text lg:inline">
             Planes
           </a>

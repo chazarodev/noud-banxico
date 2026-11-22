@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { fechaLarga } from '@/lib/banxico/parse';
+import { Input } from '@/components/ui/Input';
+import { Segmentado } from '@/components/ui/Segmentado';
+import { Ayuda } from '@/components/ui/Tooltip';
 
 type Punto = { fecha: string; valor: number };
 
@@ -43,50 +46,37 @@ export function ConvertidorDolares({ hoy, liquidacion, publicaciones }: Props) {
     return { cantidad, tc, origen, resultado };
   }, [monto, sentido, fecha, liquidacion, publicaciones]);
 
-  const campo = 'mt-1 w-full rounded-xl border border-border-strong bg-card px-3 py-2.5 text-text';
 
   return (
     <section className="mt-6 grid gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm md:grid-cols-2">
       <div className="space-y-4">
-        <div className="inline-flex rounded-xl border border-border-strong p-1 text-sm">
-          {(['usd-mxn', 'mxn-usd'] as const).map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setSentido(s)}
-              className={`rounded-lg px-3 py-1.5 ${sentido === s ? 'bg-brand text-on-brand' : 'text-text-soft'}`}
-            >
-              {s === 'usd-mxn' ? 'Dólares a pesos' : 'Pesos a dólares'}
-            </button>
-          ))}
-        </div>
-
-        <label className="block">
-          <span className="text-sm font-medium text-text">
-            Monto en {sentido === 'usd-mxn' ? 'dólares (USD)' : 'pesos (MXN)'}
-          </span>
-          <input
-            inputMode="decimal"
-            value={monto}
-            onChange={(e) => setMonto(e.target.value)}
-            className={`${campo} text-lg tabular-nums`}
-          />
-        </label>
-
-        <label className="block">
-          <span className="text-sm font-medium text-text">Fecha de la operación</span>
-          <input
-            type="date"
-            value={fecha}
-            min={minimo}
-            max={maximo}
-            onChange={(e) => e.target.value && setFecha(e.target.value)}
-            className={campo}
-          />
-          <span className="mt-1 block text-xs text-text-soft">
-            La fecha de tu factura o de tu pago. Disponible desde el {minimo ? fechaLarga(minimo) : '—'}.
-          </span>
-        </label>
+        <Segmentado
+          label="Conversión"
+          modo="fila"
+          value={sentido}
+          onChange={setSentido}
+          options={[
+            { value: 'usd-mxn', label: 'Dólares a pesos' },
+            { value: 'mxn-usd', label: 'Pesos a dólares' },
+          ]}
+        />
+        <Input
+          label={`Monto en ${sentido === 'usd-mxn' ? 'dólares (USD)' : 'pesos (MXN)'}`}
+          prefijo="$"
+          inputMode="decimal"
+          value={monto}
+          onChange={(e) => setMonto(e.target.value)}
+        />
+        <Input
+          label="Fecha de la operación"
+          type="date"
+          min={minimo}
+          max={maximo}
+          value={fecha}
+          onChange={(e) => e.target.value && setFecha(e.target.value)}
+          ayuda={`La fecha de tu factura o de tu pago. Disponible desde el ${minimo ? fechaLarga(minimo) : '—'}.`}
+          extra={<Ayuda texto="Se usa el tipo de cambio publicado en el DOF el día hábil anterior a esta fecha." />}
+        />
       </div>
 
       <div aria-live="polite">

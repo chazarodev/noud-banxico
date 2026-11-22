@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { calcularAguinaldo, DIAS_MINIMOS_LFT, type MetodoIsr } from '@/lib/fiscal/aguinaldo-2026';
+import { Input } from '@/components/ui/Input';
+import { Segmentado } from '@/components/ui/Segmentado';
+import { Ayuda } from '@/components/ui/Tooltip';
 
 const pesos = (n: number) =>
   n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2 });
@@ -44,48 +47,45 @@ export function CalculadoraAguinaldo() {
     [sueldo, dias, todoElAnio, ingreso],
   );
 
-  const campo = 'mt-1 w-full rounded-xl border border-border-strong bg-card px-3 py-2.5 text-text';
 
   return (
     <section className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
       <div className="grid gap-4 md:grid-cols-3">
-        <label className="block">
-          <span className="text-sm font-medium text-text">Sueldo mensual bruto</span>
-          <input inputMode="decimal" value={sueldo} onChange={(e) => setSueldo(e.target.value)} className={`${campo} tabular-nums`} />
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-text">Días de aguinaldo</span>
-          <input inputMode="numeric" value={dias} onChange={(e) => setDias(e.target.value)} className={`${campo} tabular-nums`} />
-          <span className="mt-1 block text-xs text-text-soft">Mínimo por ley: 15. Usa más si tu empresa los da.</span>
-        </label>
-        <div>
-          <span className="text-sm font-medium text-text">¿Trabajaste todo 2026?</span>
-          <div className="mt-1 flex gap-2">
-            {[true, false].map((v) => (
-              <button
-                key={String(v)}
-                type="button"
-                onClick={() => setTodoElAnio(v)}
-                className={`flex-1 rounded-xl border px-3 py-2.5 text-sm ${
-                  todoElAnio === v ? 'border-brand bg-brand text-on-brand' : 'border-border-strong text-text-soft'
-                }`}
-              >
-                {v ? 'Sí' : 'No'}
-              </button>
-            ))}
-          </div>
+        <Input
+          label="Sueldo mensual bruto"
+          prefijo="$"
+          inputMode="decimal"
+          value={sueldo}
+          onChange={(e) => setSueldo(e.target.value)}
+        />
+        <Input
+          label="Días de aguinaldo"
+          inputMode="numeric"
+          value={dias}
+          onChange={(e) => setDias(e.target.value)}
+          ayuda="Mínimo por ley: 15. Usa más si tu empresa los da."
+        />
+        <div className="space-y-2">
+          <Segmentado
+            label="¿Trabajaste todo 2026?"
+            modo="fila"
+            value={todoElAnio ? 'si' : 'no'}
+            onChange={(v) => setTodoElAnio(v === 'si')}
+            options={[
+              { value: 'si', label: 'Sí' },
+              { value: 'no', label: 'No' },
+            ]}
+          />
           {!todoElAnio && (
-            <label className="mt-2 block">
-              <span className="text-xs text-text-soft">Fecha de ingreso</span>
-              <input
-                type="date"
-                min="2026-01-01"
-                max="2026-12-31"
-                value={ingreso}
-                onChange={(e) => e.target.value && setIngreso(e.target.value)}
-                className={campo}
-              />
-            </label>
+            <Input
+              label="Fecha de ingreso"
+              type="date"
+              min="2026-01-01"
+              max="2026-12-31"
+              value={ingreso}
+              onChange={(e) => e.target.value && setIngreso(e.target.value)}
+              extra={<Ayuda texto="Se calcula la parte proporcional a los días trabajados del ingreso al 31 de diciembre." />}
+            />
           )}
         </div>
       </div>

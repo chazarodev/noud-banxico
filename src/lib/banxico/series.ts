@@ -42,6 +42,7 @@ export const SERIES = {
     decimales: 6,
     frecuencia: 'diaria',
     prefijo: '$',
+    ruta: '/udis',
     descripcion: 'Unidad de inversión para créditos y actualización de montos.',
   },
   tiie28: {

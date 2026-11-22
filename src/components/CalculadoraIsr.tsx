@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { calcularIsrMensual, SUBSIDIO_2026 } from '@/lib/fiscal/isr-2026';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { Ayuda } from '@/components/ui/Tooltip';
 
 const pesos = (n: number) =>
   n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2 });
@@ -19,37 +22,21 @@ export function CalculadoraIsr({ mesInicial }: { mesInicial: number }) {
   return (
     <section className="mt-6 grid gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm md:grid-cols-2">
       <div className="space-y-4">
-        <label className="block">
-          <span className="text-sm font-medium text-text">Sueldo mensual bruto (gravable)</span>
-          <div className="mt-1 flex items-center rounded-xl border border-border-strong bg-card px-3 focus-within:border-brand">
-            <span className="text-text-soft">$</span>
-            <input
-              inputMode="decimal"
-              value={texto}
-              onChange={(e) => setTexto(e.target.value)}
-              className="w-full bg-transparent px-2 py-2.5 text-lg tabular-nums text-text outline-none"
-              aria-label="Sueldo mensual bruto"
-            />
-          </div>
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-text">Mes del pago</span>
-          <select
-            value={mes}
-            onChange={(e) => setMes(Number(e.target.value))}
-            className="mt-1 w-full rounded-xl border border-border-strong bg-card px-3 py-2.5 text-text"
-          >
-            {MESES.map((m, i) => (
-              <option key={m} value={i + 1}>
-                {m} 2026
-              </option>
-            ))}
-          </select>
-          <span className="mt-1 block text-xs text-text-soft">
-            El subsidio para el empleo cambia en enero ({pesos(SUBSIDIO_2026.enero)}) y de febrero a diciembre (
-            {pesos(SUBSIDIO_2026.febreroADiciembre)}).
-          </span>
-        </label>
+        <Input
+          label="Sueldo mensual bruto"
+          prefijo="$"
+          inputMode="decimal"
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
+          extra={<Ayuda texto="Lo que gana el trabajador antes de impuestos. Aquí se supone que todo es gravable (sin aguinaldo, horas extra ni otros exentos)." />}
+        />
+        <Select
+          label="Mes del pago"
+          value={mes}
+          onChange={setMes}
+          options={MESES.map((m, i) => ({ value: i + 1, label: `${m} 2026` }))}
+          ayuda={`El subsidio para el empleo cambia en enero (${pesos(SUBSIDIO_2026.enero)}) y de febrero a diciembre (${pesos(SUBSIDIO_2026.febreroADiciembre)}).`}
+        />
       </div>
 
       <div aria-live="polite">

@@ -35,6 +35,18 @@ export function PiePagina() {
               <Link href="/tipo-de-cambio" className="hover:text-text">Tipo de cambio DOF hoy</Link>
             </li>
             <li>
+              <Link href="/udis" className="hover:text-text">Valor de la UDI hoy</Link>
+            </li>
+            <li>
+              <Link href="/uma" className="hover:text-text">UMA 2026</Link>
+            </li>
+            <li>
+              <Link href="/salario-minimo" className="hover:text-text">Salario mínimo 2026</Link>
+            </li>
+            <li>
+              <Link href="/otras-monedas" className="hover:text-text">Euro y otras monedas</Link>
+            </li>
+            <li>
               <Link href="/convertidor-dolares-pesos" className="hover:text-text">Convertidor de dólares a pesos</Link>
             </li>
             <li>
