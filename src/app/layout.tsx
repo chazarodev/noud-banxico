@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ['latin'], display: 'swap' });
 export const metadata: Metadata = {
   // Solo el origen: Next.js agrega el basePath (/indicadores) a las imágenes de metadatos.
   // Las URLs canónicas se construyen completas con url() en cada página.
-  metadataBase: new URL(new URL(SITE_URL).origin),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Indicadores económicos de Banxico hoy | Noud XML',
     template: '%s | Noud XML',
