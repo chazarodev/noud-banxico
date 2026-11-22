@@ -117,6 +117,25 @@ export default async function Portada() {
       )}
 
       <section className="mt-10">
+        <h2 className="text-xl font-semibold text-text">Gráficas</h2>
+        <div className="mt-3 grid gap-4 sm:grid-cols-3">
+          {(
+            [
+              ['/tablero', 'La economía de México hoy', 'Dólar, inflación, tasas, remesas y reservas en un tablero.', 'bg-info-soft border-info/30'],
+              ['/inflacion', 'Inflación y poder adquisitivo', '¿Cuánto valen hoy tus pesos de otros años?', 'bg-danger-soft border-terracotta/40'],
+              ['/dolar-historico', 'Precio del dólar histórico', 'Desde 1991, con máximos y mínimos de cada periodo.', 'bg-brand-light border-brand/40'],
+            ] as const
+          ).map(([href, titulo, texto, fondo]) => (
+            <Link key={href} href={href} className={`rounded-2xl border p-5 transition hover:shadow-md ${fondo}`}>
+              <p className="font-semibold text-text">{titulo}</p>
+              <p className="mt-1 text-sm text-text-soft">{texto}</p>
+              <p className="mt-3 text-sm font-medium text-brand-ink">Ver gráficas →</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10">
         <h2 className="text-xl font-semibold text-text">Valores de referencia</h2>
         <div className="mt-3 grid gap-4 sm:grid-cols-3">
           {(

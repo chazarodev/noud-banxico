@@ -79,3 +79,22 @@ html {
     animation: none;
   }
 }
+
+/* ---------- Colores de series para gráficas ----------
+   Validados con el script de la skill dataviz (lightness, croma, daltonismo, contraste) contra la tarjeta clara
+   (#ffffff) y la oscura (#171934). El par verde/terracota queda en la franja 6–8 de ΔE para daltonismo: por eso
+   las gráficas con varias series siempre llevan leyenda con nombre y valor (codificación secundaria). */
+:root {
+  --serie-1: #1f9a63; /* verde Noud */
+  --serie-2: #d9663f; /* terracota */
+  --serie-3: #5d5abf; /* índigo */
+  --serie-4: #ae8210; /* ocre */
+  --banda-meta: rgba(128, 191, 162, 0.16);
+}
+[data-theme="dark"] {
+  --serie-1: #2fa872;
+  --serie-2: #d86a42;
+  --serie-3: #7f7de6;
+  --serie-4: #b0841c;
+  --banda-meta: rgba(128, 191, 162, 0.12);
+}

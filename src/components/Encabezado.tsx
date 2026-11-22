@@ -16,6 +16,11 @@ const INDICADORES = [
   { href: '/salario-minimo', texto: 'Salario mínimo 2026' },
   { href: '/otras-monedas', texto: 'Euro y otras monedas' },
 ];
+const GRAFICAS = [
+  { href: '/tablero', texto: 'La economía de México hoy' },
+  { href: '/inflacion', texto: 'Inflación y poder adquisitivo' },
+  { href: '/dolar-historico', texto: 'Precio del dólar histórico' },
+];
 const HERRAMIENTAS = [
   { href: '/calculadora-aguinaldo', texto: 'Calculadora de aguinaldo 2026' },
   { href: '/calculadora-isr-salarios', texto: 'ISR por sueldos y salarios' },
@@ -86,6 +91,7 @@ export function Encabezado() {
 
         <nav className="hidden items-center gap-6 text-sm text-text-soft md:flex">
           <Desplegable titulo="Indicadores" items={INDICADORES} />
+          <Desplegable titulo="Gráficas" items={GRAFICAS} />
           <Desplegable titulo="Calculadoras" items={HERRAMIENTAS} />
         </nav>
 
@@ -121,6 +127,12 @@ export function Encabezado() {
         <nav className="border-t border-border bg-card px-4 py-4 text-sm md:hidden">
           <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-soft">Indicadores</p>
           {INDICADORES.map((i) => (
+            <Link key={i.href} href={i.href} className="block rounded-lg px-1 py-2 text-text">
+              {i.texto}
+            </Link>
+          ))}
+          <p className="mt-3 px-1 text-xs font-medium uppercase tracking-wide text-text-soft">Gráficas</p>
+          {GRAFICAS.map((i) => (
             <Link key={i.href} href={i.href} className="block rounded-lg px-1 py-2 text-text">
               {i.texto}
             </Link>

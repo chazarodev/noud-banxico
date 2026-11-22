@@ -47,6 +47,15 @@ export function PiePagina() {
               <Link href="/otras-monedas" className="hover:text-text">Euro y otras monedas</Link>
             </li>
             <li>
+              <Link href="/tablero" className="hover:text-text">La economía de México hoy</Link>
+            </li>
+            <li>
+              <Link href="/inflacion" className="hover:text-text">Inflación en México</Link>
+            </li>
+            <li>
+              <Link href="/dolar-historico" className="hover:text-text">Dólar histórico</Link>
+            </li>
+            <li>
               <Link href="/convertidor-dolares-pesos" className="hover:text-text">Convertidor de dólares a pesos</Link>
             </li>
             <li>
