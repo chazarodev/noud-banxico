@@ -4,10 +4,10 @@ import { NOUD, conUtm, enlaceNoud } from '@/lib/sitio';
 
 // Rutas internas (next/link agrega /indicadores solo). Agrega aquí cada página nueva.
 const NAV = [
-  { href: '/', texto: 'Indicadores' },
   { href: '/tipo-de-cambio', texto: 'Tipo de cambio' },
-  { href: '/convertidor-dolares-pesos', texto: 'Convertidor USD' },
+  { href: '/calculadora-aguinaldo', texto: 'Aguinaldo 2026' },
   { href: '/calculadora-isr-salarios', texto: 'ISR sueldos' },
+  { href: '/convertidor-dolares-pesos', texto: 'Convertidor USD' },
 ];
 
 export function Encabezado() {

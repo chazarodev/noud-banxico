@@ -38,6 +38,9 @@ export function PiePagina() {
               <Link href="/convertidor-dolares-pesos" className="hover:text-text">Convertidor de dólares a pesos</Link>
             </li>
             <li>
+              <Link href="/calculadora-aguinaldo" className="hover:text-text">Calculadora de aguinaldo 2026</Link>
+            </li>
+            <li>
               <Link href="/calculadora-isr-salarios" className="hover:text-text">Calculadora de ISR por sueldos</Link>
             </li>
           </ul>
