@@ -13,6 +13,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: url('/'), changeFrequency: 'daily', priority: 1 },
     { url: url(ruta), changeFrequency: 'daily', priority: 0.9 },
+    { url: url('/convertidor-dolares-pesos'), changeFrequency: 'daily', priority: 0.8 },
+    { url: url('/calculadora-isr-salarios'), changeFrequency: 'monthly', priority: 0.8 },
     // Una URL por día natural: cada día tiene su valor para operaciones, haya o no publicación.
     ...d.liquidacion.map((p) => ({
       url: url(`${ruta}/${p.fecha}`),

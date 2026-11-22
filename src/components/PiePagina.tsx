@@ -34,6 +34,12 @@ export function PiePagina() {
             <li>
               <Link href="/tipo-de-cambio" className="hover:text-text">Tipo de cambio DOF hoy</Link>
             </li>
+            <li>
+              <Link href="/convertidor-dolares-pesos" className="hover:text-text">Convertidor de dólares a pesos</Link>
+            </li>
+            <li>
+              <Link href="/calculadora-isr-salarios" className="hover:text-text">Calculadora de ISR por sueldos</Link>
+            </li>
           </ul>
         </div>
 

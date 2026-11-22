@@ -5,7 +5,7 @@ import { SERIES, type ClaveSerie, type DefSerie } from './series';
 import { buscarFecha, sumarDias } from './tipo-de-cambio';
 
 // Indicadores de la portada (además del tipo de cambio, que tiene su propio módulo).
-const CLAVES = ['udis', 'tasaObjetivo', 'tiie28', 'cetes91', 'inpc'] as const satisfies readonly ClaveSerie[];
+const CLAVES = ['udis', 'tasaObjetivo', 'fondeo', 'tiie28', 'cetes91', 'inpc'] as const satisfies readonly ClaveSerie[];
 
 export type ResumenIndicador = {
   clave: ClaveSerie;

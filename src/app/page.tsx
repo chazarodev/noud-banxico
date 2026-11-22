@@ -47,7 +47,7 @@ export default async function Portada() {
         }}
       />
 
-      <section className="max-w-2xl">
+      <section className="max-w-3xl">
         <p className="text-sm font-medium text-brand-ink">{fechaLarga(hoy)}</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-tight text-text sm:text-4xl">
           Indicadores económicos de Banxico, hoy
@@ -111,6 +111,32 @@ export default async function Portada() {
           ))}
         </section>
       )}
+
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold text-text">Calculadoras</h2>
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <Link
+            href="/convertidor-dolares-pesos"
+            className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-border-strong hover:shadow-md"
+          >
+            <p className="font-semibold text-text">Convertidor de dólares a pesos</p>
+            <p className="mt-1 text-sm text-text-soft">
+              Con el tipo de cambio DOF que corresponde a la fecha de tu factura o pago.
+            </p>
+            <p className="mt-3 text-sm font-medium text-brand-ink">Convertir →</p>
+          </Link>
+          <Link
+            href="/calculadora-isr-salarios"
+            className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-border-strong hover:shadow-md"
+          >
+            <p className="font-semibold text-text">Calculadora de ISR por sueldos y salarios</p>
+            <p className="mt-1 text-sm text-text-soft">
+              Retención mensual con la tarifa 2026 y el subsidio para el empleo, paso a paso.
+            </p>
+            <p className="mt-3 text-sm font-medium text-brand-ink">Calcular →</p>
+          </Link>
+        </div>
+      </section>
 
       <TarjetaNoud
         titulo="Lleva estos datos a tu contabilidad sin capturarlos"

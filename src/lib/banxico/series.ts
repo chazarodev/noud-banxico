@@ -62,6 +62,15 @@ export const SERIES = {
     sufijo: '%',
     descripcion: 'Tasa de política monetaria que fija la Junta de Gobierno.',
   },
+  fondeo: {
+    id: 'SF43773',
+    nombre: 'Tasa de fondeo bancario',
+    unidad: '% anual',
+    decimales: 2,
+    frecuencia: 'diaria',
+    sufijo: '%',
+    descripcion: 'Costo del dinero a un día entre bancos (mediana ponderada por volumen).',
+  },
   cetes91: {
     id: 'SF60634',
     nombre: 'Cetes a 91 días',

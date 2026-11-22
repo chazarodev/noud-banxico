@@ -6,6 +6,8 @@ import { NOUD, conUtm, enlaceNoud } from '@/lib/sitio';
 const NAV = [
   { href: '/', texto: 'Indicadores' },
   { href: '/tipo-de-cambio', texto: 'Tipo de cambio' },
+  { href: '/convertidor-dolares-pesos', texto: 'Convertidor USD' },
+  { href: '/calculadora-isr-salarios', texto: 'ISR sueldos' },
 ];
 
 export function Encabezado() {
@@ -19,7 +21,7 @@ export function Encabezado() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 text-sm text-text-soft md:flex">
+        <nav className="hidden items-center gap-5 text-sm text-text-soft lg:flex">
           {NAV.map((n) => (
             <Link key={n.href} href={n.href} className="hover:text-text">
               {n.texto}
