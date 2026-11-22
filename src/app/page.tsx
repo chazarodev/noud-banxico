@@ -1,69 +1,132 @@
-import Image from "next/image";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { JsonLd } from '@/components/JsonLd';
+import { TarjetaIndicador } from '@/components/TarjetaIndicador';
+import { TarjetaNoud } from '@/components/TarjetaNoud';
+import { resumenIndicadores } from '@/lib/banxico/indicadores';
+import { fechaCorta, fechaLarga, hoyCDMX, mesLargo } from '@/lib/banxico/parse';
+import { SERIES, formatoValor } from '@/lib/banxico/series';
+import { datosTipoDeCambio, vistaDelDia } from '@/lib/banxico/tipo-de-cambio';
+import { url } from '@/lib/sitio';
 
-export default function Home() {
+// Se regenera cada hora; los datos tienen su propia caché (6 h y 24 h).
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: { absolute: 'Indicadores económicos de Banxico hoy: tipo de cambio DOF, UDIS, TIIE e INPC' },
+  description:
+    'Consulta en un solo lugar el tipo de cambio DOF, la UDI, la tasa objetivo, la TIIE, los Cetes y el INPC con datos oficiales del Banco de México.',
+  alternates: { canonical: url('/') },
+};
+
+async function tipoDeCambioSeguro() {
+  try {
+    const d = await datosTipoDeCambio();
+    return { hoy: d.hoy, ...vistaDelDia(d, d.hoy) };
+  } catch (error) {
+    console.error('[portada] Tipo de cambio no disponible', error);
+    return null;
+  }
+}
+
+export default async function Portada() {
+  const [tc, indicadores] = await Promise.all([tipoDeCambioSeguro(), resumenIndicadores()]);
+  const hoy = tc?.hoy ?? hoyCDMX();
+  const TC = SERIES.tipoCambioDOF;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <main className="mx-auto max-w-5xl px-4 py-10">
+      <JsonLd
+        datos={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'Indicadores Noud XML',
+          url: url('/'),
+          inLanguage: 'es-MX',
+          publisher: { '@type': 'Organization', name: 'Noud XML', url: 'https://noudxml.com' },
+        }}
+      />
+
+      <section className="max-w-2xl">
+        <p className="text-sm font-medium text-brand-ink">{fechaLarga(hoy)}</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight text-text sm:text-4xl">
+          Indicadores económicos de Banxico, hoy
+        </h1>
+        <p className="mt-3 text-text-soft">
+          Los datos que más usan contadores y pymes, tomados del Sistema de Información Económica del Banco de
+          México y actualizados varias veces al día.
+        </p>
+      </section>
+
+      {/* Indicador principal */}
+      {tc?.publicacion && tc.operacion && (
+        <Link
+          href={TC.ruta}
+          className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:border-border-strong hover:shadow-md sm:grid-cols-2"
+        >
+          <div>
+            <p className="text-sm font-medium text-text-soft">
+              Tipo de cambio DOF ·{' '}
+              {tc.publicacion.exacto ? 'publicado hoy' : `publicado el ${fechaCorta(tc.publicacion.punto.fecha)}`}
+            </p>
+            <p className="mt-1 text-5xl font-bold tabular-nums text-text">
+              {formatoValor(TC, tc.publicacion.punto.valor)}
+            </p>
+            <p className="mt-1 text-xs text-text-soft">Pesos por dólar</p>
+          </div>
+          <div className="sm:border-l sm:border-border sm:pl-6">
+            <p className="text-sm font-medium text-text-soft">Para registrar operaciones de hoy</p>
+            <p className="mt-1 text-3xl font-bold tabular-nums text-text">
+              {formatoValor(TC, tc.operacion.punto.valor)}
+            </p>
+            <p className="mt-1 text-xs text-text-soft">Publicado en el DOF el día hábil anterior</p>
+            <p className="mt-4 text-sm font-medium text-brand-ink">Ver historial y próximos días →</p>
+          </div>
+        </Link>
+      )}
+
+      {/* Resto de indicadores */}
+      {indicadores.length > 0 && (
+        <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {indicadores.map(({ clave, def, actual, proximoCambio }) => (
+            <TarjetaIndicador
+              key={clave}
+              titulo={def.nombre}
+              valor={formatoValor(def, actual.valor)}
+              detalle={
+                def.frecuencia === 'mensual'
+                  ? `Dato de ${mesLargo(actual.fecha)}`
+                  : actual.fecha === hoy
+                    ? `Vigente hoy · ${def.unidad}`
+                    : `Dato del ${fechaCorta(actual.fecha)} · ${def.unidad}`
+              }
+              descripcion={def.descripcion}
+              nota={
+                clave === 'tasaObjetivo' && proximoCambio
+                  ? `Cambia a ${formatoValor(def, proximoCambio.valor)} el ${fechaCorta(proximoCambio.fecha)}`
+                  : undefined
+              }
+              href={def.ruta}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          ))}
+        </section>
+      )}
+
+      <TarjetaNoud
+        titulo="Lleva estos datos a tu contabilidad sin capturarlos"
+        texto="Noud XML convierte tus XML de CFDI en papeles de trabajo: cuentas por pagar y cobrar, DIOT y pagos provisionales de IVA e ISR."
+        campana="portada"
+        ubicacion="bajo-indicadores"
+      />
+
+      <section className="mt-12 max-w-2xl space-y-3 text-sm text-text-soft">
+        <h2 className="text-lg font-semibold text-text">¿De dónde salen estos datos?</h2>
+        <p>
+          Todos los valores provienen del Sistema de Información Económica (SIE) del Banco de México y se
+          consultan a través de su API oficial. Cada indicador muestra la fecha del dato. Los fines de semana y
+          días inhábiles se muestra el último valor disponible.
+        </p>
+      </section>
+    </main>
   );
 }

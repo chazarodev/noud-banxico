@@ -8,14 +8,27 @@ export const SITE_URL = (
 /** url('/tipo-de-cambio') → 'https://noudxml.com/indicadores/tipo-de-cambio' */
 export const url = (ruta = '') => `${SITE_URL}${ruta}`;
 
-/** Enlace al registro de Noud XML con UTM, para medir qué ubicación convierte. */
-export function enlaceNoud(campana: string, ubicacion: string): string {
-  const destino = new URL(
-    process.env.NEXT_PUBLIC_NOUD_SIGNUP_URL ?? 'https://noudxml.com',
-  );
-  destino.searchParams.set('utm_source', 'indicadores');
-  destino.searchParams.set('utm_medium', 'referral');
-  destino.searchParams.set('utm_campaign', campana);
-  destino.searchParams.set('utm_content', ubicacion);
-  return destino.toString();
+/**
+ * Enlaces a Noud XML. Es otra app (mismo dominio, otro despliegue): se enlazan con <a>,
+ * NUNCA con next/link, que les agregaría el prefijo /indicadores.
+ */
+export const NOUD = {
+  inicio: 'https://noudxml.com/',
+  planes: 'https://noudxml.com/#planes',
+  login: 'https://noudxml.com/login',
+  registro: process.env.NEXT_PUBLIC_NOUD_SIGNUP_URL ?? 'https://noudxml.com/register',
+};
+
+/** Agrega UTM a un enlace de Noud XML para medir qué ubicación convierte. */
+export function conUtm(destino: string, campana: string, ubicacion: string): string {
+  const u = new URL(destino);
+  u.searchParams.set('utm_source', 'indicadores');
+  u.searchParams.set('utm_medium', 'referral');
+  u.searchParams.set('utm_campaign', campana);
+  u.searchParams.set('utm_content', ubicacion);
+  return u.toString();
 }
+
+/** Enlace al registro de Noud XML con UTM. */
+export const enlaceNoud = (campana: string, ubicacion: string) =>
+  conUtm(NOUD.registro, campana, ubicacion);

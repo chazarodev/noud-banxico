@@ -1,0 +1,154 @@
+/* ============================================
+   TOKENS — Noud (tema claro + tema oscuro)
+   Cambio de tema: <html data-theme="dark"> (ver LEEME.md)
+   ============================================ */
+:root {
+  color-scheme: light;
+
+  /* Typography */
+  --font-sans: "Inter", sans-serif;
+
+  /* 🌟 IDENTIDAD (sin cambios) */
+  --color-brand: #80BFA2;
+  --color-brand-dark: #4A8C6F;
+  --color-brand-light: #EFF7F3;
+
+  /* NUEVO: roles de la marca que antes se resolvían con colores fijos */
+  --color-brand-hover: #6FB192;  /* hover del botón primario (mint un poco más profundo) */
+  --color-brand-ink: #2F6B4F;    /* verde para TEXTO sobre claro: montos, badges (6.3:1 sobre blanco) */
+  --color-on-brand: #1F2147;     /* texto sobre fondo --color-brand (7.2:1; el blanco daba 2.1:1) */
+
+  /* Accents (sin cambios) */
+  --color-terracotta: #F29877;
+  --color-sand: #F2D091;
+  --color-sky: #A6E3E9;
+
+  /* Backgrounds */
+  --color-bg: #FAF9F6;
+  --color-bg-card: #ffffff;
+  --color-bg-input: #ffffff;
+  --color-bg-soft: #F0F3E9;       /* hover de botón secundario */
+  --color-bg-muted: #EAE5DD;      /* encabezado de tablas */
+  --color-bg-hover: rgba(128, 191, 162, 0.05); /* hover de filas */
+
+  /* Sidebar */
+  --color-bg-sidebar-top: #FAF9F6;
+  --color-bg-sidebar-bottom: #ffffff;
+  --color-bg-sidebar: var(--color-bg-sidebar-bottom); /* antes NO existía y lo usaba responsiveLayout.css */
+
+  /* Textos */
+  --color-text: #1F2147;
+  --color-text-soft: #5C608A;
+
+  /* Borders */
+  --color-border: rgba(31, 33, 71, 0.07);
+  --color-border-strong: rgba(31, 33, 71, 0.15);  /* inputs, hover de botones */
+  --color-border-hover: rgba(139, 125, 106, 0.2); /* hover de KPI */
+
+  /* States */
+  --color-success: #80BFA2;
+  --color-warning: #F2D091;
+  --color-danger: #F29877;
+  --color-info: #5D5ABF;
+
+  /* NUEVO: fondos suaves y tintas de texto para badges / chips de ícono */
+  --color-warning-soft: rgba(242, 208, 145, 0.15);
+  --color-danger-soft: rgba(242, 152, 119, 0.15);
+  --color-info-soft: rgba(93, 90, 191, 0.10);
+  --color-draft-soft: rgba(92, 96, 138, 0.10);
+  --color-warning-ink: #8A5A00;   /* antes #b37311 (3.7:1) → 5.6:1 */
+  --color-danger-ink: #A8452D;    /* antes #c95c42 (3.7:1) → 5.3:1 */
+  --color-info-ink: #5D5ABF;
+
+  /* Chart Colors */
+  --chart-billed: #4fa777;
+  --chart-paid: #27373b;
+  --chart-pending: #e7c55e;
+  --chart-overdue: #d96c42;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+
+  /* Radius */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(31, 33, 71, 0.02);
+  --shadow-md: 0 10px 32px rgba(139, 125, 106, 0.09);
+  --shadow-lg: 0 20px 48px rgba(139, 125, 106, 0.14);
+  --shadow-up: 0 -4px 12px rgba(139, 125, 106, 0.08);   /* barra móvil inferior */
+  --shadow-sticky: 2px 0 4px rgba(31, 33, 71, 0.06);    /* columnas fijas */
+  --shadow-sticky-th: 4px 0 6px rgba(31, 33, 71, 0.08); /* encabezado fijo */
+
+  /* Grano de fondo */
+  --grain-1: rgba(31, 33, 71, 0.015);
+  --grain-2: rgba(242, 208, 145, 0.03);
+  --grain-3: rgba(242, 152, 119, 0.02);
+}
+
+/* ============================================
+   TEMA OSCURO — "índigo medianoche"
+   Parte de tu propio --color-text (#1F2147): el índigo pasa de
+   texto a fondo, y el hueso pasa de fondo a texto.
+   ============================================ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-brand: #80BFA2;          /* el mint funciona igual de bien sobre oscuro (8:1) */
+  --color-brand-dark: #5FA886;
+  --color-brand-light: rgba(128, 191, 162, 0.14);
+  --color-brand-hover: #8FCBAF;    /* en oscuro el hover ACLARA */
+  --color-brand-ink: #8FD0B2;
+  --color-on-brand: #0F1022;
+
+  --color-bg: #0F1022;
+  --color-bg-card: #171934;
+  --color-bg-input: #1D1F3E;
+  --color-bg-soft: #1E2042;
+  --color-bg-muted: #1E2042;
+  --color-bg-hover: rgba(128, 191, 162, 0.08);
+
+  --color-bg-sidebar-top: #0F1022;
+  --color-bg-sidebar-bottom: #0F1B1E;  /* eco del lino verdoso del tema claro */
+
+  --color-text: #ECEBF5;
+  --color-text-soft: #A4A8CC;
+
+  --color-border: rgba(236, 235, 245, 0.09);
+  --color-border-strong: rgba(236, 235, 245, 0.20);
+  --color-border-hover: rgba(128, 191, 162, 0.35);
+
+  --color-info: #9A98F5;               /* #5D5ABF sobre oscuro daba 3:1 */
+  --color-warning-soft: rgba(242, 208, 145, 0.16);
+  --color-danger-soft: rgba(242, 152, 119, 0.16);
+  --color-info-soft: rgba(154, 152, 245, 0.16);
+  --color-draft-soft: rgba(164, 168, 204, 0.14);
+  --color-warning-ink: #F2D091;
+  --color-danger-ink: #F6A58A;
+  --color-info-ink: #A5A3F7;
+
+  --chart-billed: #5FBF8C;
+  --chart-paid: #8EC5F0;               /* #27373b era invisible (1.4:1) */
+  --chart-pending: #E7C55E;
+  --chart-overdue: #E8825C;
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 10px 32px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.45);
+  --shadow-up: 0 -4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-sticky: 2px 0 4px rgba(0, 0, 0, 0.35);
+  --shadow-sticky-th: 4px 0 6px rgba(0, 0, 0, 0.4);
+
+  --grain-1: rgba(236, 235, 245, 0.02);
+  --grain-2: rgba(242, 208, 145, 0.02);
+  --grain-3: rgba(242, 152, 119, 0.015);
+}

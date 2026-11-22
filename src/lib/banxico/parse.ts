@@ -51,6 +51,10 @@ export const fechaLarga = (iso: string) => fmtLarga.format(new Date(`${iso}T00:0
 /** "2026-11-20" → "20 nov 2026" */
 export const fechaCorta = (iso: string) => fmtCorta.format(new Date(`${iso}T00:00:00Z`));
 
+const fmtMes = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+/** "2026-10-01" → "octubre de 2026" (para series mensuales) */
+export const mesLargo = (iso: string) => fmtMes.format(new Date(`${iso}T00:00:00Z`));
+
 export function formatoNumero(valor: number, decimales: number): string {
   return new Intl.NumberFormat('es-MX', {
     minimumFractionDigits: decimales,

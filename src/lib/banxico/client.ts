@@ -86,6 +86,19 @@ export function obtenerOportunos(ids: readonly string[]): Promise<Serie[]> {
 }
 
 /**
+ * Datos de varias series entre dos fechas AAAA-MM-DD, en UNA consulta histórica.
+ * Útil para series que publican valores futuros (UDIS, tasa objetivo): el dato oportuno
+ * trae el último, que puede ser de una fecha que aún no llega.
+ */
+export function obtenerRango(
+  ids: readonly string[],
+  inicio: string,
+  fin: string,
+): Promise<Serie[]> {
+  return consultarCache(`series/${ids.join(',')}/datos/${inicio}/${fin}`, SEIS_HORAS);
+}
+
+/**
  * Histórico completo de una serie (límite: 200 cada 5 min, 10,000/día).
  * Todas las páginas por fecha comparten esta misma URL, así que es una sola consulta al día.
  */
