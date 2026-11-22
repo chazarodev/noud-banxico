@@ -41,6 +41,9 @@ export function PiePagina() {
               <Link href="/calculadora-aguinaldo" className="hover:text-text">Calculadora de aguinaldo 2026</Link>
             </li>
             <li>
+              <Link href="/verificador-tipo-cambio-cfdi" className="hover:text-text">Verificador de tipo de cambio en CFDI</Link>
+            </li>
+            <li>
               <Link href="/calculadora-isr-salarios" className="hover:text-text">Calculadora de ISR por sueldos</Link>
             </li>
           </ul>

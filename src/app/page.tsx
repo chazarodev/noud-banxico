@@ -114,7 +114,7 @@ export default async function Portada() {
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold text-text">Calculadoras</h2>
-        <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <Link
             href="/calculadora-aguinaldo"
             className="rounded-2xl border border-brand/40 bg-brand-light p-5 shadow-sm transition hover:border-brand hover:shadow-md"
@@ -134,6 +134,16 @@ export default async function Portada() {
               Con el tipo de cambio DOF que corresponde a la fecha de tu factura o pago.
             </p>
             <p className="mt-3 text-sm font-medium text-brand-ink">Convertir →</p>
+          </Link>
+          <Link
+            href="/verificador-tipo-cambio-cfdi"
+            className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-border-strong hover:shadow-md"
+          >
+            <p className="font-semibold text-text">Verificador de tipo de cambio en CFDI</p>
+            <p className="mt-1 text-sm text-text-soft">
+              Sube tus XML en dólares y revisa si el tipo de cambio coincide con el del DOF.
+            </p>
+            <p className="mt-3 text-sm font-medium text-brand-ink">Verificar mis facturas →</p>
           </Link>
           <Link
             href="/calculadora-isr-salarios"
