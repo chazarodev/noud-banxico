@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url(ruta), changeFrequency: 'daily', priority: 0.9 },
     { url: url('/convertidor-dolares-pesos'), changeFrequency: 'daily', priority: 0.8 },
     { url: url('/verificador-tipo-cambio-cfdi'), changeFrequency: 'monthly', priority: 0.8 },
+    { url: url('/calculadora-iva-retenciones'), changeFrequency: 'monthly', priority: 0.9 },
     { url: url('/calculadora-actualizacion-recargos'), changeFrequency: 'monthly', priority: 0.8 },
     { url: url('/calculadora-aguinaldo'), changeFrequency: 'monthly', priority: 0.9 },
     { url: url('/calculadora-isr-salarios'), changeFrequency: 'monthly', priority: 0.8 },

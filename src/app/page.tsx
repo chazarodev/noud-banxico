@@ -146,6 +146,16 @@ export default async function Portada() {
             <p className="mt-3 text-sm font-medium text-brand-ink">Verificar mis facturas →</p>
           </Link>
           <Link
+            href="/calculadora-iva-retenciones"
+            className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-border-strong hover:shadow-md"
+          >
+            <p className="font-semibold text-text">IVA y retenciones al facturar</p>
+            <p className="mt-1 text-sm text-text-soft">
+              Honorarios, RESICO, rentas y fletes: cuánto facturar y cuánto recibes, incluso desde el depósito.
+            </p>
+            <p className="mt-3 text-sm font-medium text-brand-ink">Calcular mi factura →</p>
+          </Link>
+          <Link
             href="/calculadora-actualizacion-recargos"
             className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-border-strong hover:shadow-md"
           >
