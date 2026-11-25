@@ -82,10 +82,11 @@ gtag('config', '${GA_ID}');`}
         <div
           role="region"
           aria-label="Aviso de cookies"
-          className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-xl rounded-2xl border border-border bg-card p-4 text-sm shadow-lg sm:inset-x-auto sm:right-4"
+          className="fixed inset-x-2 bottom-2 z-40 mx-auto flex max-w-xl items-center gap-3 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-lg sm:inset-x-auto sm:bottom-3 sm:right-4 sm:block sm:rounded-2xl sm:p-4 sm:text-sm"
         >
+          {/* En el celular es una sola franja (texto corto + botones) para no tapar el resultado. */}
           <p className="text-text">
-            Usamos cookies de Google Analytics para saber qué páginas son útiles. No las usamos para publicidad.
+            Usamos cookies de Google Analytics<span className="hidden sm:inline"> para saber qué páginas son útiles</span>. No las usamos para publicidad.
             {process.env.NEXT_PUBLIC_PRIVACIDAD_URL && (
               <>
                 {' '}
@@ -96,18 +97,18 @@ gtag('config', '${GA_ID}');`}
               </>
             )}
           </p>
-          <div className="mt-3 flex justify-end gap-2">
+          <div className="flex shrink-0 justify-end gap-1 sm:mt-3 sm:gap-2">
             <button
               type="button"
               onClick={() => decidir('rechazada')}
-              className="rounded-xl px-3 py-1.5 text-text-soft hover:bg-soft hover:text-text"
+              className="rounded-lg px-2 py-1.5 text-text-soft hover:bg-soft hover:text-text sm:rounded-xl sm:px-3"
             >
               Rechazar
             </button>
             <button
               type="button"
               onClick={() => decidir('aceptada')}
-              className="rounded-xl bg-brand px-3 py-1.5 font-medium text-on-brand hover:bg-brand-hover"
+              className="rounded-lg bg-brand px-2.5 py-1.5 font-medium text-on-brand hover:bg-brand-hover sm:rounded-xl sm:px-3"
             >
               Entendido
             </button>

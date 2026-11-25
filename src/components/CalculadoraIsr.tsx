@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Segmentado } from '@/components/ui/Segmentado';
 import { Select } from '@/components/ui/Select';
 import { Ayuda } from '@/components/ui/Tooltip';
+import { AccionesResultado } from '@/components/AccionesResultado';
 
 const pesos = (n: number) =>
   n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2 });
@@ -37,12 +38,13 @@ export function CalculadoraIsr({ mesInicial }: { mesInicial: number }) {
   };
 
   return (
-    <section className="mt-6 grid gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm md:grid-cols-2">
+    <section className="mt-6 grid gap-6 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6 md:grid-cols-2">
       <div className="space-y-4">
         <Segmentado
           label="¿Cada cuánto te pagan?"
           value={periodo}
           onChange={cambiarPeriodo}
+          modo="rejilla"
           options={PERIODOS.map((p) => ({ value: p.valor, label: p.texto }))}
         />
         <Input
@@ -72,12 +74,24 @@ export function CalculadoraIsr({ mesInicial }: { mesInicial: number }) {
       <div aria-live="polite">
         {r ? (
           <>
-            <p className="text-sm font-medium text-text-soft">ISR a retener en el periodo {NOMBRE[periodo]}</p>
-            <p className="text-4xl font-bold tabular-nums text-text">{pesos(r.isrRetenido)}</p>
-            <p className="mt-1 text-sm text-text-soft">
-              Sueldo después de ISR: <span className="font-medium text-text">{pesos(r.neto)}</span> · tasa efectiva{' '}
-              {pct(r.tasaEfectiva)}
-            </p>
+            <div className="rounded-2xl bg-brand-light p-4 sm:p-5">
+              <p className="text-sm font-medium text-brand-ink">ISR a retener en el periodo {NOMBRE[periodo]}</p>
+              <p className="mt-1 text-4xl font-bold tabular-nums text-text">{pesos(r.isrRetenido)}</p>
+              <p className="mt-1 text-sm text-text-soft">
+                Sueldo después de ISR: <span className="font-medium text-text">{pesos(r.neto)}</span> · tasa efectiva{' '}
+                {pct(r.tasaEfectiva)}
+              </p>
+              <AccionesResultado
+                ruta="/calculadora-isr-salarios"
+                texto="Calcula cuánto ISR te retienen de tu sueldo (semanal, quincenal o mensual):"
+                campana="isr-2026"
+                ubicacion="isr"
+                atajos={[
+                  { href: '/calculadora-aguinaldo', etiqueta: 'Tu aguinaldo 2026' },
+                  { href: '/tablero', etiqueta: 'La economía hoy' },
+                ]}
+              />
+            </div>
 
             <dl className="mt-5 divide-y divide-border text-sm">
               {[

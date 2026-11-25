@@ -5,9 +5,10 @@ import { ImageResponse } from 'next/og';
 export const tamanoOg = { width: 1200, height: 630 };
 export const tipoOg = 'image/png';
 
-type Datos = { etiqueta: string; titulo: string; valor?: string; detalle?: string };
+export type CifraOg = { etiqueta: string; valor: string; color: string };
+type Datos = { etiqueta: string; titulo: string; valor?: string; detalle?: string; cifras?: CifraOg[] };
 
-export function imagenOg({ etiqueta, titulo, valor, detalle }: Datos) {
+export function imagenOg({ etiqueta, titulo, valor, detalle, cifras }: Datos) {
   return new ImageResponse(
     (
       <div
@@ -40,6 +41,28 @@ export function imagenOg({ etiqueta, titulo, valor, detalle }: Datos) {
           <div style={{ display: 'flex', fontSize: valor ? 52 : 68, fontWeight: 700, lineHeight: 1.1, marginTop: 8 }}>{titulo}</div>
           {valor && <div style={{ display: 'flex', fontSize: 120, fontWeight: 800, marginTop: 12 }}>{valor}</div>}
           {detalle && <div style={{ display: 'flex', fontSize: 30, color: '#5C608A', marginTop: 12 }}>{detalle}</div>}
+          {cifras && cifras.length > 0 && (
+            <div style={{ display: 'flex', gap: 20, marginTop: 28 }}>
+              {cifras.map((c) => (
+                <div
+                  key={c.etiqueta}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    background: '#FFFFFF',
+                    border: '2px solid #E4E2EC',
+                    borderTop: `8px solid ${c.color}`,
+                    borderRadius: 16,
+                    padding: '18px 22px',
+                  }}
+                >
+                  <div style={{ display: 'flex', fontSize: 24, color: '#5C608A' }}>{c.etiqueta}</div>
+                  <div style={{ display: 'flex', fontSize: 46, fontWeight: 800, marginTop: 6 }}>{c.valor}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 24, color: '#5C608A' }}>

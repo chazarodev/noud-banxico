@@ -7,8 +7,11 @@ interface Props<T extends string> {
   onChange: (v: T) => void;
   options: { value: T; label: string }[];
   label?: string;
-  /** "fila": botones del mismo ancho en una línea. "envolver": se acomodan en varias líneas si no caben. */
-  modo?: 'fila' | 'envolver';
+  /**
+   * "fila": botones del mismo ancho en una línea. "envolver": se acomodan en varias líneas si no caben.
+   * "rejilla": muchas opciones; en el celular, 3 columnas parejas; desde sm, todas en una línea.
+   */
+  modo?: 'fila' | 'envolver' | 'rejilla';
 }
 
 /** Grupo de opciones excluyentes (radiogroup) con la estética de Noud XML. */
@@ -21,7 +24,9 @@ export function Segmentado<T extends string>({ value, onChange, options, label, 
         aria-label={label}
         className={clsx(
           'rounded-xl border border-border-strong bg-card p-1',
-          modo === 'fila' ? 'grid auto-cols-fr grid-flow-col gap-1' : 'flex flex-wrap gap-1',
+          modo === 'fila' && 'grid auto-cols-fr grid-flow-col gap-1',
+          modo === 'envolver' && 'flex flex-wrap gap-1',
+          modo === 'rejilla' && 'grid grid-cols-3 gap-1 sm:grid-flow-col sm:auto-cols-fr sm:grid-cols-none',
         )}
       >
         {options.map((o) => {
@@ -34,7 +39,8 @@ export function Segmentado<T extends string>({ value, onChange, options, label, 
               aria-checked={activo}
               onClick={() => onChange(o.value)}
               className={clsx(
-                'rounded-lg px-3 py-1.5 text-center transition-colors duration-150',
+                'rounded-lg py-1.5 text-center transition-colors duration-150',
+                modo === 'rejilla' ? 'px-1' : 'px-3',
                 activo ? 'bg-brand font-semibold text-on-brand shadow-sm' : 'text-text-soft hover:bg-soft hover:text-text',
               )}
             >

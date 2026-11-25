@@ -5,6 +5,7 @@ import { calcularAguinaldo, DIAS_MINIMOS_LFT, type MetodoIsr } from '@/lib/fisca
 import { Input } from '@/components/ui/Input';
 import { Segmentado } from '@/components/ui/Segmentado';
 import { Ayuda } from '@/components/ui/Tooltip';
+import { AccionesResultado } from '@/components/AccionesResultado';
 
 const pesos = (n: number) =>
   n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2 });
@@ -35,6 +36,48 @@ function Metodo({ titulo, m, mejor }: { titulo: string; m: MetodoIsr; mejor: boo
   );
 }
 
+/**
+ * Lo primero que ve el usuario en el celular: cuánto le llega. El patrón elige el método de ISR,
+ * así que si los dos dan distinto se muestra el rango en vez de prometer el más favorable.
+ */
+function Respuesta({ r }: { r: NonNullable<ReturnType<typeof calcularAguinaldo>> }) {
+  const netos = [r.ley.neto, r.reglamento.neto];
+  const min = Math.min(...netos);
+  const max = Math.max(...netos);
+  const unico = r.gravado <= 0 || max - min < 1;
+
+  return (
+    <div className="rounded-2xl bg-brand-light p-4 sm:p-5">
+      <p className="text-sm font-medium text-brand-ink">Te llegarían aproximadamente</p>
+      {unico ? (
+        <p className="mt-1 text-4xl font-bold tabular-nums text-text">{pesos(max)}</p>
+      ) : (
+        <p className="mt-1 text-3xl font-bold tabular-nums text-text sm:text-4xl">
+          {pesos(min)} <span className="text-xl font-semibold text-text-soft">a</span> {pesos(max)}
+        </p>
+      )}
+      <p className="mt-1 text-sm text-text-soft">
+        {unico
+          ? r.gravado <= 0
+            ? 'Libre de ISR: todo tu aguinaldo está exento.'
+            : `Aguinaldo de ${pesos(r.bruto)} menos ISR.`
+          : `De ${pesos(r.bruto)} brutos. Depende del método de ISR que use tu empresa (detalle abajo).`}
+      </p>
+
+      <AccionesResultado
+        ruta="/calculadora-aguinaldo"
+        texto="Calcula cuánto aguinaldo te toca este año y cuánto ISR te retienen:"
+        campana="aguinaldo-2026"
+        ubicacion="aguinaldo"
+        atajos={[
+          { href: '/calculadora-isr-salarios', etiqueta: 'ISR de tu quincena' },
+          { href: '/tablero', etiqueta: 'La economía hoy' },
+        ]}
+      />
+    </div>
+  );
+}
+
 export function CalculadoraAguinaldo() {
   const [sueldo, setSueldo] = useState('15000');
   const [dias, setDias] = useState(String(DIAS_MINIMOS_LFT));
@@ -53,7 +96,7 @@ export function CalculadoraAguinaldo() {
 
 
   return (
-    <section className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <section className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
       <div className="grid gap-4 md:grid-cols-3">
         <Input
           label="Sueldo mensual bruto"
@@ -97,7 +140,9 @@ export function CalculadoraAguinaldo() {
       <div aria-live="polite" className="mt-6 border-t border-border pt-6">
         {r ? (
           <>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <Respuesta r={r} />
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div>
                 <p className="text-sm text-text-soft">Aguinaldo bruto</p>
                 <p className="text-3xl font-bold tabular-nums text-text">{pesos(r.bruto)}</p>
