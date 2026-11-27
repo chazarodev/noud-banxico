@@ -10,8 +10,9 @@ interface Props<T extends string> {
   /**
    * "fila": botones del mismo ancho en una línea. "envolver": se acomodan en varias líneas si no caben.
    * "rejilla": muchas opciones; en el celular, 3 columnas parejas; desde sm, todas en una línea.
+   * "apilado": etiquetas largas; en el celular, una opción por renglón; desde sm, columnas parejas.
    */
-  modo?: 'fila' | 'envolver' | 'rejilla';
+  modo?: 'fila' | 'envolver' | 'rejilla' | 'apilado';
 }
 
 /** Grupo de opciones excluyentes (radiogroup) con la estética de Noud XML. */
@@ -27,6 +28,7 @@ export function Segmentado<T extends string>({ value, onChange, options, label, 
           modo === 'fila' && 'grid auto-cols-fr grid-flow-col gap-1',
           modo === 'envolver' && 'flex flex-wrap gap-1',
           modo === 'rejilla' && 'grid grid-cols-3 gap-1 sm:grid-flow-col sm:auto-cols-fr sm:grid-cols-none',
+          modo === 'apilado' && 'grid grid-cols-1 gap-1 sm:grid-flow-col sm:auto-cols-fr',
         )}
       >
         {options.map((o) => {

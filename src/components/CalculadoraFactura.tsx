@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/Input';
 import { Segmentado } from '@/components/ui/Segmentado';
 import { Select } from '@/components/ui/Select';
 import { Ayuda } from '@/components/ui/Tooltip';
+import { AccionesResultado } from '@/components/AccionesResultado';
 
 const pesos = (n: number) => n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 const num = (t: string) => Number(t.replace(/[^\d.]/g, ''));
@@ -23,6 +24,12 @@ const ETIQUETA_MODO: Record<Modo, string> = {
   subtotal: 'Precio sin IVA (subtotal)',
   total: 'Total de la factura con IVA',
   deposito: 'Lo que me depositaron',
+};
+/** Versión corta para el selector (cabe en tres columnas y en el celular). */
+const OPCION_MODO: Record<Modo, string> = {
+  subtotal: 'Subtotal sin IVA',
+  total: 'Total con IVA',
+  deposito: 'Lo depositado',
 };
 
 export function CalculadoraFactura() {
@@ -46,7 +53,7 @@ export function CalculadoraFactura() {
 
   return (
     <>
-      <section className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <section className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-4">
             <Segmentado
@@ -90,9 +97,10 @@ export function CalculadoraFactura() {
           <div className="space-y-4">
             <Segmentado
               label="¿Qué cantidad conoces?"
+              modo="apilado"
               value={modo}
               onChange={setModo}
-              options={(Object.keys(ETIQUETA_MODO) as Modo[]).map((m) => ({ value: m, label: ETIQUETA_MODO[m] }))}
+              options={(Object.keys(OPCION_MODO) as Modo[]).map((m) => ({ value: m, label: OPCION_MODO[m] }))}
             />
             <Input
               label={ETIQUETA_MODO[modo]}
@@ -114,7 +122,41 @@ export function CalculadoraFactura() {
         </div>
 
         {f && (
-          <div aria-live="polite" className="mt-6 grid gap-6 border-t border-border pt-6 md:grid-cols-2">
+          <div aria-live="polite" className="mt-6 border-t border-border pt-6">
+          {/* La respuesta depende de lo que el usuario conoce: si dio el depósito, quiere saber cuánto facturar. */}
+          <div className="rounded-2xl bg-brand-light p-4 sm:p-5">
+            {modo === 'deposito' ? (
+              <>
+                <p className="text-sm font-medium text-brand-ink">Tu factura debe ser por</p>
+                <p className="mt-1 text-4xl font-bold tabular-nums text-text">{pesos(f.total)}</p>
+                <p className="mt-1 text-sm text-text-soft">
+                  Subtotal {pesos(f.subtotal)} + IVA. Después de retenciones recibes{' '}
+                  <span className="font-medium text-text">{pesos(f.deposito)}</span>.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-brand-ink">Recibes en tu cuenta</p>
+                <p className="mt-1 text-4xl font-bold tabular-nums text-text">{pesos(f.deposito)}</p>
+                <p className="mt-1 text-sm text-text-soft">
+                  De una factura por {pesos(f.total)}
+                  {f.retIsr + f.retIva > 0 ? ` · te retienen ${pesos(f.retIsr + f.retIva)}` : ' · sin retenciones'}.
+                </p>
+              </>
+            )}
+            <AccionesResultado
+              ruta="/calculadora-iva-retenciones"
+              texto="Calcula cuánto debe decir tu factura y cuánto te retienen (RESICO, honorarios, arrendamiento):"
+              campana="iva-retenciones"
+              ubicacion="factura"
+              atajos={[
+                { href: '/calculadora-actualizacion-recargos', etiqueta: 'Recargos si pagas tarde' },
+                { href: '/tipo-de-cambio', etiqueta: 'Tipo de cambio hoy' },
+              ]}
+            />
+          </div>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
             <div>
               <p className="text-sm font-medium text-text-soft">Tu factura</p>
               <dl className="mt-2 divide-y divide-border text-sm">
@@ -136,9 +178,9 @@ export function CalculadoraFactura() {
                   </div>
                 ))}
               </dl>
-              <div className="mt-3 flex items-baseline justify-between rounded-xl bg-brand-light px-3 py-2">
-                <span className="text-sm font-medium text-text">Recibes en tu cuenta</span>
-                <span className="text-2xl font-bold tabular-nums text-text">{pesos(f.deposito)}</span>
+              <div className="flex justify-between gap-4 border-t border-border py-1.5 text-sm font-semibold">
+                <span className="text-text">(=) Recibes en tu cuenta</span>
+                <span className="tabular-nums text-text">{pesos(f.deposito)}</span>
               </div>
               <p className="mt-2 text-xs text-text-soft">Régimen fiscal en el CFDI: {f.claveRegimen}</p>
               {f.notas.map((n) => (
@@ -204,6 +246,7 @@ export function CalculadoraFactura() {
                 </p>
               )}
             </div>
+          </div>
           </div>
         )}
       </section>
